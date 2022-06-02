@@ -11,7 +11,7 @@ data class Todo(
     var completed: Boolean
 )
 
-const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+const val BASE_URL_TEST = "https://jsonplaceholder.typicode.com/"
 
 interface ApiService {
     @GET("todos")
@@ -22,7 +22,7 @@ interface ApiService {
         fun getInstance(): ApiService {
             if (apiService == null) {
                 apiService = Retrofit.Builder()
-                    .baseUrl(BASE_URL)
+                    .baseUrl(BASE_URL_TEST)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build().create(ApiService::class.java)
             }

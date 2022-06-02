@@ -12,18 +12,77 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val vm = ToDoViewModel()
+        val vm = PersonViewModel()
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-                ToDoView(vm)
+                PersonView(vm)
             }
         }
     }
+}
+
+@Composable
+fun PersonView(vm: PersonViewModel) {
+
+    LaunchedEffect(Unit, block = {
+        vm.getPersonList()
+    })
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row {
+                        Text("Persons")
+                    }
+                })
+        },
+        content = {
+            if (vm.errorMessage.isEmpty()) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    LazyColumn(modifier = Modifier.fillMaxHeight()) {
+                        items(vm.personList) { person ->
+                            Column {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(16.dp),
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(0.dp, 0.dp, 16.dp, 0.dp)
+                                    ) {
+                                        Text(
+                                            person.name,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.width(16.dp))
+                                    Text(
+                                        person.birth.format(DateTimeFormatter.ISO_DATE),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                                Divider()
+                            }
+                        }
+                    }
+                }
+            } else {
+                Text(vm.errorMessage)
+            }
+        }
+    )
 }
 
 @Composable
@@ -38,7 +97,7 @@ fun ToDoView(vm: ToDoViewModel) {
             TopAppBar(
                 title = {
                     Row {
-                        Text("Todos")
+                        Text("Persons")
                     }
                 })
         },
